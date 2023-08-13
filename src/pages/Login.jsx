@@ -49,7 +49,7 @@ export default function Login() {
 ////////////////////////////////////////////
 
       loggedcontexto.setLogged(true)
-      navigate("/");
+      navigate("/home");
     } catch (err) {
       console.log(err);
       if (err.response.status === 422) return alert('Ops, parece que você digitou algo inválido. Tente novamente')

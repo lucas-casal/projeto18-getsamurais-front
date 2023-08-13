@@ -7,6 +7,8 @@ import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import Ranking from "./pages/Ranking";
 import Home from "./pages/Home";
+import AddService from "./pages/AddService";
+//import MyServices from "./pages/AddService";
 
 
 export default function App() {
@@ -26,6 +28,8 @@ export default function App() {
             <Route path="/" element={<Login />} />
             <Route path="/home" element={<Home />} />
             <Route path="/cadastro" element={<SignUp />} />
+            <Route path="/new-service" element={<AddService/>}/>
+            {/*<Route path="/my-services" element={<MyServices/>}/>*/}
           </Routes>
         </BrowserRouter>
       </LoggedContext.Provider>

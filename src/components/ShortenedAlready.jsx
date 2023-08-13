@@ -10,19 +10,6 @@ import axios from "axios";
 export default function ShortenedAlready(props) {
   const [text, setText] = useState('')
   const token = localStorage.getItem('token')
-  console.log(text) 
-  console.log(props.nickname)
-  function mudarNomeFantasia(x){
-    const novoNome = x.target.value
-    if (novoNome === props.nickname || novoNome === props.url) return console.log('não mudou')
-    console.log(novoNome)
-    axios.patch(`${import.meta.env.VITE_API_URL}/urls/${props.id}`, {newNick: novoNome},{headers:{Authorization: `Bearer ${token}`}})
-    .then(res => {
-      console.log(res)
-      props.setDisableForm(true)
-    })
-    .catch(console.log)
-  }
   
   function goToLink(x){
     /*axios.get(`${import.meta.env.VITE_API_URL}/urls/open/${x}`)
@@ -55,101 +42,63 @@ export default function ShortenedAlready(props) {
 
   return (
     <UserContainer >
-      <SCurl
-      defaultValue={props.nickname ? props.nickname : props.url}
-      onBeforeInput={x => setText(x.target.value)}
-      onBlur={mudarNomeFantasia}
-      required
-      />
-
-      <SCshorted onClick={() => goToLink(props.shortUrl)}>
-        {props.shortUrl}
-      </SCshorted> 
+      <PhotoContainer>
+        <SCimage src={props.mainPhoto}/>
+      </PhotoContainer>
       
-      <SCviews>
-        Quantidade de visitantes: {props.views}
-      </SCviews>
+      <ServiceBasicInfo>
+        <Title>{props.title}</Title>
+        <Price>R${((props.price)?.toString())?.slice(0,-2)},{((props.price)?.toString())?.slice(-2)}</Price>
 
-      <DeleteContainer onClick={deleteShorted}>
-        <BsFillTrash3Fill size={35}/>
-      </DeleteContainer>
+      </ServiceBasicInfo>
     </UserContainer>
 
   );
 }
-const DeleteContainer = styled.button`
+const Title = styled.h1`
+  
+`
+const Price = styled.h2`
+  
+`
+const ServiceBasicInfo = styled.div`
+  width: 70%;
   height: 100%;
-  width: 9vw;
-  background-color: white;
-  color: red;
-  border-radius: 0 12px 12px 0; 
-  border: 1px solid white;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: space-around;
+`
+const PhotoContainer = styled.div`
+  width: 90px;
+  height: 90px;
+  border-radius: 10px;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  &:hover{
-    background-color: red;
-    color: white;
-    cursor: pointer;
-    &:active{
-      border: 1px solid black;
-    }
-  }
 `
-const SCurl = styled.input`
-  border: 1px solid #80cc74;
+const SCimage = styled.img`
+  height: 90px;
+
+`
+const UserContainer = styled.div`
   box-sizing: border-box;
-  background-color: #80CC74;
-  height: 100%;
-  width: 25vw;
-  min-width: 200px;
-  font-size: 14px;
-  overflow-x: scroll;
-  text-align: left;
+  width: 100%;
+  height: 100px;
+  padding-left: 10px;
   color:  white;
   font-family: 'Lexend Deca', sans-serif;
+  font-size: 22px;
   font-weight: 400;
   line-height: 28px;
   letter-spacing: 0em;
-`
-const SCshorted = styled.p`
-  width: 10vw; 
-  min-width:  100px;
-  text-align: left;
-  font-size: 14px;
-  &:hover{
-    cursor:pointer;
-    color: green;
-    &:active{
-      color: black;
-    }
-  }
-`
-const SCviews = styled.p`
-  width: 15vw;
-  min-width: 100px;
-  font-size: 14px;
-  margin-right: -50px;
-  text-align: center;
-`
-const UserContainer = styled.h1`
-    box-sizing: border-box;
-    width: 100%;
-    min-width: 950px;
-    height: 62px;
-    padding-left: 10px;
-    background-color: #80CC74;
-    color:  white;
-    font-family: 'Lexend Deca', sans-serif;
-    font-size: 22px;
-    font-weight: 400;
-    line-height: 28px;
-    letter-spacing: 0em;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    border-radius: 12px;
-    box-shadow: 0px 4px 24px 0px #78b159c1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 20px;
+  box-shadow: 0px 4px 24px 0px #78b159c1;
 
 `

@@ -7,7 +7,7 @@ import logo from "../assets/getsamurais-logo-static.png";
 import logoSimple from "../assets/getsamurais-logo-simple.png"
 import buscarCookie from "./buscarCookie";
 import axios from "axios";
-export default function Header(props) {
+export default function Footer(props) {
   const [GIF, setGIF] = useState('ok')
   const {logged, setLogged} = useContext(LoggedContext)
   const navigate = useNavigate()
@@ -29,33 +29,45 @@ export default function Header(props) {
     }
   return (
     <>
-    <Head home={props.home}>
-        <ImageLogo src={props.home ? logoSimple : (GIF ? logoGif : logo)} />
-        {props.home? <SignOutBtn>Sair</SignOutBtn> : ''}
-    </Head>
+    <Foot>
+        <SignOutBtn onClick={() => navigate('/home')} disabled={props.page === 'home'}>Home</SignOutBtn>
+        <SignOutBtn onClick={() => navigate('/my-services')}disabled={props.page === 'my services'}>Meus serviços</SignOutBtn>
+        <SignOutBtn onClick={() => navigate('/new-service')}disabled={props.page === 'add service'}>Adicionar serviço</SignOutBtn>
+
+    </Foot>
     </>
   );
 }
 const SignOutBtn = styled.button`
-   border: 1px dashed red;
-   border-radius: 10px;
-   &:active{
-    background-color: red;
+   height: 100%;
+   width: 100%;
+   border: 1px solid red;
+   font-size: 20px;
+
+      &:active{
+    background-color: #ff3131;
     color: white;
     border: 1px solid black;
+    border-top: 1px solid #ff3131;
+   }
+   &:disabled{
+    background-color: #ff3131;
+    color: white;
+    font-weight: bold;
+    border-top: 1px solid #ff3131;
    }
 `
 const ImageLogo = styled.img`
   height: 30vh;
 
 `
-const Head = styled.div`
-  height: ${x => x.home ? '10vh' : '30vh'};
+const Foot = styled.div`
+  height: 10vh;
   width: 100vw;
   position: fixed;
   background-color: white;
   z-index: 10;
-  top: 0;
+  bottom: 0;
   left:0;
   display: flex;
   justify-content: space-around;

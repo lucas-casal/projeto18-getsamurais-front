@@ -6,6 +6,7 @@ import Header from "../components/Header";
 import { LoggedContext } from "../contexts/UserContext";
 import { ThreeDots } from "react-loader-spinner";
 import ShortenedAlready from "../components/ShortenedAlready";
+import Footer from "../components/Footer";
 const pontinhos = 
 <ThreeDots 
 height="20" 
@@ -47,9 +48,10 @@ export default function Home() {
   useEffect(() => {
     if (token){
     axios.get(`${import.meta.env.VITE_API_URL}/users/me`, {headers: {Authorization: `Bearer ${token}`}})
+    axios.get(`${import.meta.env.VITE_API_URL}/users/me`, {headers: {Authorization: `Bearer ${token}`}})
     .then(res => {
       console.log(res)
-      setShortArray(res.data.shortenedUrls)
+      setShortArray(res.data.servicesOffered)
       setDisableForm(false)
     })
     .catch(err =>{
@@ -62,25 +64,13 @@ console.log(shortArray)
 
   return (
     <PageArea>
-      <Header />
-      <SCForm onSubmit={(ev) => sendSignUpForm(ev)}>
-          <InputCadastro
-            onChange={(x) => setURL(x.target.value)}
-            type="url"
-            id="url"
-            placeholder="Links que cabem no bolso"
-            required
-            value={URL}
-            disabled={disableForm}
-          ></InputCadastro>
-
-          <SendBtn type="submit" disabled={disableForm} >{ disableForm ? pontinhos : 'Encurtar link' }</SendBtn>
-      </SCForm>
+      <Header home={'home'}/>
       <RankingContainer>
         {shortArray.map(x => {
-          return <ShortenedAlready setDisableForm={setDisableForm} nickname={x.nickname} key={x.id} id={x.id} shortUrl={x.shortUrl} views={x.visitCount} url={x.url} />
+          return <ShortenedAlready setDisableForm={setDisableForm} title={x.title} key={x.id} id={x.id} price={x.price} mainPhoto={x.mainPhoto} />
         })}
       </RankingContainer>
+      <Footer page={'home'}/>
     </PageArea>
   );
 }
@@ -140,16 +130,17 @@ const SendBtn = styled.button`
 `;
 
 const RankingContainer = styled.div`
-  width: 80vw;
-  height: 45vh;
+  width: 100vw;
+  height: 80vh;
+  background-image: linear-gradient(to bottom, white, #ff3131);
   position: fixed;
-  top: 45vh;
+  top: 10vh;
   display: flex;
   flex-direction: column;
   align-items: start;
   gap: 10px;
   overflow-y: scroll;
-  overflow-x: show;
+  overflow-x: hidden;
 `
 const Title = styled.h1`
   font-family: 'Lexend Deca', sans-serif;
