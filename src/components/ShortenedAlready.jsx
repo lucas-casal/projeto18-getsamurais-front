@@ -10,19 +10,8 @@ import axios from "axios";
 export default function ShortenedAlready(props) {
   const [text, setText] = useState('')
   const token = localStorage.getItem('token')
-  
-  function goToLink(x){
-    /*axios.get(`${import.meta.env.VITE_API_URL}/urls/open/${x}`)
-    .then((res) => {
-      console.log(res.data.slice(18))*/
-      if(confirm(`Você está será redirecionado para fora dessa aplicação`)) {
-        window.location.href=`${import.meta.env.VITE_API_URL}/urls/open/${x}`;
-      }
-    /*})
-    .catch(err => {
-      console.log(err)
-    })*/
-  }  
+  const navigate = useNavigate()
+   
 
   function deleteShorted(){
     const id = props.id
@@ -39,11 +28,12 @@ export default function ShortenedAlready(props) {
         )
     }
   }
+  const reader = new FileReader()
 
   return (
-    <UserContainer >
+    <UserContainer onClick={() => navigate(`/services/${props.id}`)}>
       <PhotoContainer>
-        <SCimage src={props.mainPhoto}/>
+        <SCimage src={ props.mainPhoto }/>
       </PhotoContainer>
       
       <ServiceBasicInfo>
@@ -59,7 +49,8 @@ const Title = styled.h1`
   
 `
 const Price = styled.h2`
-  
+  align-self: end;
+  margin-right: 15px;
 `
 const ServiceBasicInfo = styled.div`
   width: 70%;
@@ -87,8 +78,9 @@ const UserContainer = styled.div`
   box-sizing: border-box;
   width: 100%;
   height: 100px;
+  border: 1px solid #ddbc00;
   padding-left: 10px;
-  color:  white;
+  background-color:  white;
   font-family: 'Lexend Deca', sans-serif;
   font-size: 22px;
   font-weight: 400;
@@ -99,6 +91,6 @@ const UserContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   border-radius: 20px;
-  box-shadow: 0px 4px 24px 0px #78b159c1;
+  box-shadow: 0px 4px 15px 0px #ffd90090;
 
 `

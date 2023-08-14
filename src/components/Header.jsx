@@ -11,10 +11,15 @@ export default function Header(props) {
   const [GIF, setGIF] = useState('ok')
   const {logged, setLogged} = useContext(LoggedContext)
   const navigate = useNavigate()
-  const [username, setUsername] = useState("")
+  const [user, setUser] = useState({})
   const token = localStorage.getItem('token')
   
   useEffect( () => {
+    axios.get(`${import.meta.env.VITE_API_URL}/users/me`, {headers: {Authorization: `Bearer ${token}`}})
+    .then(res => {
+      setUser(res.data)
+    })
+    .catch(console.log)
     setTimeout(() => {
       setGIF('')
     }, 5000)
@@ -22,16 +27,15 @@ export default function Header(props) {
 
     function signOut(){
       localStorage.clear()
-      document.cookie=`id=`
-      document.cookie=`name=`
+
       setLogged(false)      
-      navigate('/login')
+      navigate('/')
     }
   return (
     <>
     <Head home={props.home}>
-        <ImageLogo src={props.home ? logoSimple : (GIF ? logoGif : logo)} />
-        {props.home? <SignOutBtn>Sair</SignOutBtn> : ''}
+        <ImageLogo src={props.home === 'home' ? logoSimple : (props.home === 'my services' ? user.picture : (GIF ? logoGif : logo))} />
+        {props.home? <SignOutBtn onClick={() => signOut()}>Sair</SignOutBtn> : ''}
     </Head>
     </>
   );
@@ -47,6 +51,8 @@ const SignOutBtn = styled.button`
 `
 const ImageLogo = styled.img`
   height: 30vh;
+  max-width: 50vw;
+
 
 `
 const Head = styled.div`

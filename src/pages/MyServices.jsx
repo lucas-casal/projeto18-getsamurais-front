@@ -7,6 +7,7 @@ import { LoggedContext } from "../contexts/UserContext";
 import { ThreeDots } from "react-loader-spinner";
 import ShortenedAlready from "../components/ShortenedAlready";
 import Footer from "../components/Footer";
+import UserServiceBox from "../components/UserServiceBox";
 const pontinhos = 
 <ThreeDots 
 height="20" 
@@ -19,19 +20,19 @@ wrapperClassName=""
 visible={true}
  />
 
-export default function Home() {
+export default function MyServices() {
   const loggedcontexto = useContext(LoggedContext)
   const [shortArray, setShortArray] = useState([])
   const [disableForm, setDisableForm] = useState(false)
   const [URL, setURL] = useState('')
   const token = localStorage.getItem('token')
   const navigate = useNavigate()
+  const [checkbox, setCheckbox] = useState('')
   
   async function sendSignUpForm(ev) {
     ev.preventDefault();
     setDisableForm(true)
     const loginInfo = {url: URL};
-
 
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/urls/shorten`, loginInfo, {headers: {Authorization: `Bearer ${token}`}});
@@ -47,29 +48,30 @@ export default function Home() {
 
   useEffect(() => {
     if (token){
-    axios.get(`${import.meta.env.VITE_API_URL}/services`, {headers: {Authorization: `Bearer ${token}`}})
+    axios.get(`${import.meta.env.VITE_API_URL}/users/me`, {headers: {Authorization: `Bearer ${token}`}})
     .then(res => {
       console.log(res)
-      setShortArray(res.data)
+      setShortArray(res.data.servicesOffered)
       setDisableForm(false)
+      setCheckbox('')
     })
     .catch(err =>{
       console.log(err)
     })
   } else{
     navigate('/login')
-  }},[disableForm])
+  }},[checkbox, disableForm])
 console.log(shortArray)
 
   return (
     <PageArea>
-      <Header home={'home'}/>
+      <Header home={'my services'}/>
       <RankingContainer>
         {shortArray.map(x => {
-          return <ShortenedAlready setDisableForm={setDisableForm} title={x.title} key={x.id} id={x.id} price={x.price} mainPhoto={x.mainPhoto} />
+          return <UserServiceBox setCheckbox={setCheckbox} available={x.available} setDisableForm={setDisableForm} title={x.title} key={x.id} id={x.id} price={x.price} mainPhoto={x.mainPhoto} />
         })}
       </RankingContainer>
-      <Footer page={'home'}/>
+      <Footer page={'my services'}/>
     </PageArea>
   );
 }

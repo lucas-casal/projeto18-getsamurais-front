@@ -7,6 +7,7 @@ import { LoggedContext } from "../contexts/UserContext";
 import { ThreeDots } from "react-loader-spinner";
 import ShortenedAlready from "../components/ShortenedAlready";
 import Footer from "../components/Footer";
+
 const pontinhos = 
 <ThreeDots 
 height="20" 
@@ -28,8 +29,7 @@ export default function AddService() {
   const [CEL, setCEL] = useState('')
   const [disableCEL, setDisableCEL] = useState(true)
   const [description, setDescription] = useState('')
-  const [preview, setPreview] = useState('')
-  const [picture, setPicture] = useState('')
+  const [mainPhoto, setMainPhoto] = useState('')
 
 
   const token = localStorage.getItem('token')
@@ -38,15 +38,19 @@ export default function AddService() {
   async function sendSignUpForm(ev) {
     ev.preventDefault();
     setDisableForm(true)
-    const loginInfo = {title: title};
 
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/urls/shorten`, loginInfo, {headers: {Authorization: `Bearer ${token}`}});
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/services/create`, sendObj, {headers: {Authorization: `Bearer ${token}`}});
+      alert('serviço criado com sucesso!')
+      navigate('/home')
       setTitle('')
+      setDescription('')
+      setPrice('')
+      celMascara('')
     } catch (err) {
       console.log(err); 
-      if (err.response.status === 409) return alert(`O url ${URL} já foi encurtado por outro usuário`) 
-      if (err.response.status === 401) return alert(`Você precisa estar logado para poder fazer essa ação!`)    
+      if (err.response?.status === 409) return alert(`O url ${URL} já foi encurtado por outro usuário`) 
+      if (err.response?.status === 401) return alert(`Você precisa estar logado para poder fazer essa ação!`)    
     } finally{
       setDisableForm(false)
     }
@@ -54,6 +58,7 @@ export default function AddService() {
   function handleCheckbox(x){
     console.log(x.target.checked)
     setDisableCEL(x.target.checked)
+
   }
   function mascaraReal(x){
     let number= x.target.value;
@@ -64,34 +69,50 @@ export default function AddService() {
   }
   function celMascara(cel) {
 
-    let celFormat = cel.target.value.replace(/\D/g, "");
+    let celFormat = cel.target.value ? cel.target.value.replace(/\D/g, "") : cel;
     setPhone(celFormat)
     celFormat = celFormat.replace(/^(\d\d)(\d)/g, "($1)$2");
     celFormat = celFormat.replace(/(\d{5})(\d)/, "$1-$2");
     setCEL(celFormat);
   } 
   useEffect(() => {
-    if (picture[0]){
+    /*if (picture[0]){
       const objectUrl = URL.createObjectURL(picture[0])
       setPreview(objectUrl)
-    }
+    }*/
     setDisableForm('ok')
+    if (disableCEL){
     axios.get(`${import.meta.env.VITE_API_URL}/users/me`, {headers: {Authorization: `bearer ${token}`}})
     .then(res => {
       setPhone(res.data.phone)
       let celFormat = res.data.phone.replace(/^(\d\d)(\d)/g, "($1)$2");
       celFormat = celFormat.replace(/(\d{5})(\d)/, "$1-$2");
       setCEL(celFormat)
-      setDisableForm('')
 
     })  
     .catch(console.log)
-    },[disableCEL, picture])
+    .finally(() => setDisableForm(''))
+  } else {
+    setCEL('')
+    setPhone('')
+    setDisableForm('')
+    
+  }
+    },[disableCEL])
 
-  return (
+  const sendObj ={
+    title,
+    price,
+    description,
+    phone,
+    mainPhoto
+    //photo: 'photinho'
+    }
+console.log(sendObj)
+    return (
     <PageArea>
       <Header home={'home'}/>
-      <SCForm onSubmit={(ev) => sendSignUpForm(ev)}>
+      <SCForm encType="multipart/form-data" onSubmit={(ev) => sendSignUpForm(ev)}>
           <InputCadastro
             onChange={(x) => setTitle(x.target.value)}
             type="text"
@@ -137,14 +158,22 @@ Máx: 400 caracteres "
               type="checkbox"
               id="checkbox"
               defaultChecked='true'
-              required
               disabled={disableForm}
             ></CheckboxInput>
           {disableCEL ? 'Usar o número do meu cadastro' : 'Usar outro número de contato'}
 
           </CheckboxLabel>
+
+          <InputCadastro
+            onChange={(x) => setMainPhoto(x.target.value)}
+            type="url"
+            id="mainPhoto"
+            placeholder="* Foto de capa"
+            required
+            disabled={disableForm}
+          ></InputCadastro>
           
-          <PictureLabel htmlFor="picture">
+          {/*<PictureLabel htmlFor="picture">
             <PictureInput
               onChange={(x) => x.target.files[0] ? setPicture(x.target.files) : ''}
               type="file"
@@ -156,7 +185,7 @@ Máx: 400 caracteres "
             <SCdiv >
             {picture ? <SCimage src={preview} /> : <SCdiv> Foto principal </SCdiv>}
             </SCdiv>
-          </PictureLabel>
+  </PictureLabel>*/}
           <SendBtn type="submit" disabled={disableForm} >{ disableForm ? pontinhos : 'Criar serviço' }</SendBtn>
       
           
@@ -167,29 +196,30 @@ Máx: 400 caracteres "
   );
 }
 const SCdiv = styled.div`
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
+  width: 90px;
+  height: 90px;
+  border-radius: 10px;
+  overflow: hidden;
   display: flex;
-  margin-top: -5px;
   align-items: center;
   justify-content: center;
 `;
-
 const PictureInput = styled.input`
   display: none;
 `;
 const SCimage = styled.img`
+  width: 100px;
   height: 100px;
-  border-radius: 50%;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+ 
 `
 const PictureLabel = styled.label`
   width: 100px;
   height: 100px;
-  border-radius: 50%;
+  border-radius: 10px;
   border: 2px dashed #ff3131;
   background: #FFF;
   box-shadow: 0px 4px 24px 0px #ff313194;
@@ -219,11 +249,12 @@ const CheckboxLabel = styled.label`
   text-align: center;
   border-radius: 12px;
   margin-top: -2vh;
+  box-shadow: ${x=>x.checked ? '0px 4px 24px 0px blue' : ''};
   background-color: ${x => x.checked ? '#ffd900' : '#ffffff40'};
   color: ${x => x.checked ? 'black' : '#ffffff'};
 `
 const CheckboxInput = styled.input`
-  display: none;
+  
 `
 const DescriptionInput = styled.textarea`
   width: 57%;
@@ -267,14 +298,17 @@ align-self: end;
 margin-right: 21%;
 `
 const SCForm = styled.form`
-  width: 100vw;
+  
+  width: 100%;
   height: auto;
   display: flex;
-  margin-top: 35vh;
+  padding-top: 0;
   margin-bottom: 1vh;
   flex-direction: column;
   align-items: center;
   gap: 4vh;
+  position: absolute;
+  top: 0;
   
 `
 const InputCadastro = styled.input`
@@ -326,14 +360,18 @@ const SendBtn = styled.button`
 `;
 
 const PageArea = styled.div`
+  box-sizing: border-box;
   width: 100vw;
-  height: 100vh;
+  height: 80vh;
   display: flex;
   background-image: linear-gradient( to bottom, white, #ff3131);
+  margin-top: 10vh;
   margin-bottom: 10vh;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
   font-family: "Roboto";
   overflow-y: scroll;
+  position: relative;
+
 `;

@@ -34,13 +34,13 @@ export default function Login(props) {
   const [picture, setPicture] = useState('')
   const [disableForm, setDisableForm] = useState(false)
 
-  useEffect(() => {
+ /* useEffect(() => {
     if (picture[0]){
       const objectUrl = URL.createObjectURL(picture[0])
       setPreview(objectUrl)
     }
   },[disableForm, picture])
-  
+  */
   function cepMascara(cep) {
     let cepFormatado = cep.target.value.replace(/\D/g, "")
     setCEP(cepFormatado)
@@ -70,7 +70,7 @@ export default function Login(props) {
   async function sendSignUpForm(ev) {
     ev.preventDefault();
     setDisableForm(true)
-    const signUpInfo = { name, email, password, phone: CEL, cep: CEP, address, complement, picture: preview};
+    const signUpInfo = { name, email, password, phone: CEL, cep: CEP, address, complement, picture};
     if (password !== confirmPassword) return alert('A senha e a confirmação não estão identicas. Tente novamente!')
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/signup`, signUpInfo)
@@ -83,7 +83,6 @@ export default function Login(props) {
       setDisableForm(false)
     }
   }
-  console.log(preview)
   return (
     <PageArea>
       <Header />
@@ -128,6 +127,7 @@ export default function Login(props) {
           onChange={(x) => celMascara(x)}
           type="text"
           id="CEL"
+          maxLength={14}
           placeholder="* Celular"
           required
           disabled={disableForm}
@@ -138,6 +138,7 @@ export default function Login(props) {
           onBlur={checkCEP}
           type="text"
           id="CEP"
+          maxLength={9}
           placeholder="* CEP para execução do serviço"
           required
           disabled={disableForm}
@@ -161,7 +162,15 @@ export default function Login(props) {
           disabled={disableForm}
         ></InputCadastro>
 
-        <label htmlFor="picture">
+        <InputCadastro
+          onChange={(x) => setPicture(x.target.value)}
+          type="url"
+          id="picture"
+          placeholder="Foto de perfil"
+          disabled={disableForm}
+        ></InputCadastro>
+
+        {/*<label htmlFor="picture">
         <PictureInput
           onChange={(x) => x.target.files[0] ? setPicture(x.target.files) : ''}
           type="file"
@@ -173,7 +182,7 @@ export default function Login(props) {
         <SCdiv >
         {picture ? <SCimage src={preview} /> : <SCdiv> Foto de perfil </SCdiv>}
         </SCdiv>
-        </label>
+  </label>*/}
 
         <BtnsContainer>
           <SendBtn type="submit" disabled={disableForm} >{ disableForm ? pontinhos : 'Criar conta' }</SendBtn>

@@ -31,8 +31,8 @@ export default function Footer(props) {
     <>
     <Foot>
         <SignOutBtn onClick={() => navigate('/home')} disabled={props.page === 'home'}>Home</SignOutBtn>
-        <SignOutBtn onClick={() => navigate('/my-services')}disabled={props.page === 'my services'}>Meus serviços</SignOutBtn>
-        <SignOutBtn onClick={() => navigate('/new-service')}disabled={props.page === 'add service'}>Adicionar serviço</SignOutBtn>
+        <SignOutBtn onClick={() => navigate('/my-services')} disabled={props.page === 'my services'}>Meus serviços</SignOutBtn>
+        <SignOutBtn onClick={() => navigate('/new-service')} disabled={props.page === 'add service'}>Adicionar serviço</SignOutBtn>
 
     </Foot>
     </>
@@ -52,7 +52,7 @@ const SignOutBtn = styled.button`
    }
    &:disabled{
     background-color: #ff3131;
-    color: white;
+    color: #ffd900;
     font-weight: bold;
     border-top: 1px solid #ff3131;
    }

@@ -5,10 +5,10 @@ import { useEffect, useState } from "react";
 import { LoggedContext } from "./contexts/UserContext";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
-import Ranking from "./pages/Ranking";
 import Home from "./pages/Home";
 import AddService from "./pages/AddService";
-//import MyServices from "./pages/AddService";
+import MyServices from "./pages/MyServices";
+import ServicePage from "./pages/ServicePage";
 
 
 export default function App() {
@@ -29,7 +29,8 @@ export default function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/cadastro" element={<SignUp />} />
             <Route path="/new-service" element={<AddService/>}/>
-            {/*<Route path="/my-services" element={<MyServices/>}/>*/}
+            <Route path="/my-services" element={<MyServices/>}/>
+            <Route path="/services/:id" element={<ServicePage/>}/>
           </Routes>
         </BrowserRouter>
       </LoggedContext.Provider>
